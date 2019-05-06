@@ -1,0 +1,57 @@
+<apex:page controller="WeatherController">
+    <apex:pageBlock title="Weather Current">
+         <apex:pageBlockSection >
+               <div id="container">
+                  	<table border="0">
+                        <tr>
+                            <td>Address: </td>
+                            <td colspan="3"><span id="address"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Temp: </td>
+                            <td><span id="temp"></span></td>
+                            <td>Wind: </td>
+                            <td><span id="wind"></span></td>
+                        </tr>
+                   </table>
+             	</div>
+           </apex:pageBlockSection>
+    </apex:pageBlock>
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+    <script>
+    	$(document).ready(function(){
+            getCurrentLocation();
+        });
+    
+    	function getCurrentLocation(){
+            if(navigator.geolocation){
+                navigator.geolocation.getCurrentPosition(getWeater);
+            }else{
+                alert("Sorry! Browser not support Geolocation!");
+            }
+        }
+    	function getWeater(position){
+            Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.WeatherController.fetchWeather}',
+             position.coords.latitude,
+             position.coords.longitude,   
+            function(result, event){
+               if(event.status){
+                   resultWeather(result);                                      
+               }               
+            },
+            {escape: false}
+        );
+        }
+
+    function resultWeather(result){
+        try{
+            var obj = JSON.parse(result);
+            $("#address").html(obj.name);
+            $("#temp").html(obj.main.temp);
+            $("#wind").html(obj.wind.speed);
+        }catch(e){}
+       
+    }
+    </script>
+</apex:page>

@@ -1,0 +1,12 @@
+<apex:page controller="Note1Controller">
+     <apex:pageBlock title="Note1 Summary">
+         <apex:dataList var="item" value="{!notes}" type="1">
+              <apex:pageBlockSection >
+                Name: {! item.Name } <br/>
+                Content: {! item.Demo__c } <br/>
+                SendMail: {!IF(item.Send_Mail__c=true ,'Có','Không') }<br/>
+                Account owner: {! item.Owner.Name } <br/>
+            </apex:pageBlockSection>
+         </apex:dataList>
+    </apex:pageBlock>
+</apex:page>
